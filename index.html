@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mammal: Streamline your LLM Workflows</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#f97316', // blue-400
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .blur {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        /* show mobile nav menu when checkbox is checked */
+        #mobile-nav-menu {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-1rem);
+            transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+        }
+        #menu-toggle:checked ~ #mobile-nav-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-gray-900 font-sans overflow-x-hidden" style="background-attachment: scroll; background-size: cover;  background-image: linear-gradient(112.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%,rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%,rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%,rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%,rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%,rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%,rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),linear-gradient(157.5deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%,rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%,rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%,rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%,rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%,rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%,rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),linear-gradient(135deg, rgb(214, 214, 214) 0%, rgb(214, 214, 214) 10%,rgb(195, 195, 195) 10%, rgb(195, 195, 195) 53%,rgb(176, 176, 176) 53%, rgb(176, 176, 176) 55%,rgb(157, 157, 157) 55%, rgb(157, 157, 157) 60%,rgb(137, 137, 137) 60%, rgb(137, 137, 137) 88%,rgb(118, 118, 118) 88%, rgb(118, 118, 118) 91%,rgb(99, 99, 99) 91%, rgb(99, 99, 99) 100%),linear-gradient(90deg, rgb(195, 195, 195),rgb(228, 228, 228)); background-blend-mode:overlay,overlay,overlay,normal;">
+
+    <!-- prevent google form from redirecting -->
+    <iframe
+      style="position: absolute; visibility: hidden"
+      id="my-response-iframe"
+      name="my-response-iframe"
+    ></iframe>
+
+    <!-- Navigation -->
+    <!-- Responsive Version of this Navigation Menu sticky to top-->
+    <nav class="md:hidden bg-white shadow-lg p-4 fixed top-0 w-screen z-50">
+        <div class="flex flex-col justify-between items-center relative">
+            <div class="flex flex-row justify-between items-center w-full">
+                <a href="#home" class="text-primary logo px-2 mr-2 flex flex-row items-center text-xl font-bold">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 mr-2"
+                        viewBox="0 0 200 200">
+                        <g fill="currentColor">
+                            <path d="M71.8 33.7a55 55 0 0 0-55.1 59.5V157c0 5.2 4.2 9.4 9.4 9.4h39.6V140a7.3 7.3 0 1 1 14.6 0v26.3h39.4V140a7.3 7.3 0 1 1 14.6 0v26.3h39.6c5.2 0 9.4-4.2 9.4-9.4V88.8a55 55 0 0 0-55-55h-22.6c-.2 9.6-1.3 20.8-.4 31 1 11.2 4 20.3 12.1 25.5a4.6 4.6 0 0 1 1.5 6.3 4.6 4.6 0 0 1-6.3 1.4C101 90.8 97.3 78 96.2 65.6c-1-11.3.2-22.9.4-31.9Zm84 33a7.3 7.3 0 1 1 0 14.6 7.3 7.3 0 0 1 0-14.6z"
+                            />
+                        </g>
+                    </svg>Mammal
+                </a>
+                <label for="menu-toggle" class="md:hidden flex items-center px-3 py-2 border rounded text-primary border-primary hover:text-primary hover:border-primary">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </label>
+            </div>
+            <div class="absolute left-0 right-0 top-full">
+                <input type="checkbox" id="menu-toggle" class="hidden" />
+                <div id="mobile-nav-menu" class="mt-4 w-full bg-white shadow-md rounded-md p-4">
+                    <a href="#features" class="block py-2 hover:text-primary section-link">Features</a>
+                    <a href="#testimonials" class="block py-2 hover:text-primary section-link">Testimonials</a>
+                    <a href="#pricing" class="block py-2 hover:text-primary section-link">Pricing</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Desktop Version of this Navigation Menu -->
+    <nav id="nav" class="hidden md:flex fixed w-full z-10 top-0 p-4">
+        <div class="mx-auto bg-white rounded-full shadow-md px-4 py-2 flex items-center justify-center">
+            <a href="#home" class="text-primary logo px-2 mr-2 flex flex-row items-center text-xl font-bold">
+                <svg
+        xmlns="http://www.w3.org/2000/svg"
+	class="w-8 h-8 mr-2"
+        viewBox="0 0 200 200">
+        <g fill="currentColor">
+            <path d="M71.8 33.7a55 55 0 0 0-55.1 59.5V157c0 5.2 4.2 9.4 9.4 9.4h39.6V140a7.3 7.3 0 1 1 14.6 0v26.3h39.4V140a7.3 7.3 0 1 1 14.6 0v26.3h39.6c5.2 0 9.4-4.2 9.4-9.4V88.8a55 55 0 0 0-55-55h-22.6c-.2 9.6-1.3 20.8-.4 31 1 11.2 4 20.3 12.1 25.5a4.6 4.6 0 0 1 1.5 6.3 4.6 4.6 0 0 1-6.3 1.4C101 90.8 97.3 78 96.2 65.6c-1-11.3.2-22.9.4-31.9Zm84 33a7.3 7.3 0 1 1 0 14.6 7.3 7.3 0 0 1 0-14.6z"
+            />
+        </g>
+    </svg>mammal</a>
+            <a href="#features" class="hover:text-primary px-2 section-link">Features</a>
+            <a href="#testimonials" class="hover:text-primary px-2 section-link">Testimonials</a>
+            <a href="#pricing" class="hover:text-primary px-2 section-link">Pricing</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="p-8" style="
+        background: rgba(226, 232, 240, 0.2);
+        background: radial-gradient(at left top, rgba(96, 165, 250, 0.2), rgba(226, 232, 240, 0.2));">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-center">
+            <div class="w-full md:w-1/2 h-screen flex flex-col items-start justify-center md:text-left mb-12 md:mb-0">
+                <h1 class="text-5xl font-bold mb-4">Streamline your LLM Workflows</h1>
+                <p class="text-xl mb-8">The ultimate platform for building, testing, and deploying powerful LLM applications</p>
+                <!-- Email Form -->
+                <form method="post" target="my-response-iframe" action="https://docs.google.com/forms/d/e/1FAIpQLSe2cewozd8edQtfF1VHLW2j45_nzG-ovM_BLpbCNiTt0QFYYw/formResponse">
+                    <div class="relative flex flex-col sm:flex-row items-center justify-center md:justify-start">
+                        <input name="emailAddress" type="email" placeholder="Enter your email" class="w-full sm:w-auto pl-4 py-3 pr-36 border border-orange-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                        <button class="absolute w-32 mr-1 right-0 bg-primary hover:bg-orange-600 hover:disabled:bg-primary active:disabled:bg-primary border border-orange-400 text-white font-bold py-2 px-6 rounded-lg active:bg-orange-700 disabled:cursor-not-allowed" type="submit">
+                            Try Now
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="w-full md:w-1/2">
+                <!-- Screenshot -->
+                <img src="./screenshot.png" alt="Mammal Screenshot" class="">
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 hidden md:block">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Revolutionize Your LLM Development</h2>
+            <div class="flex flex-row justify-center gap-12">
+                <!-- Left Column -->
+                <div class="flex-1 flex flex-col gap-12">
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="cpu" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Unleash Your Favorite LLM</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Seamlessly integrate with leading models and providers like OpenAI, Anthropic, Cohere, and more. Bring your own API keys and unlock unparalleled flexibility in model selection.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="git-branch-plus" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Explore Limitless Possibilities with Branching</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Go beyond linear conversations. Create dynamic, branching threads to explore diverse conversational pathways, experiment with different scenarios, and uncover hidden insights.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Column -->
+                <div class="flex-1 flex flex-col gap-12">
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="file-pen-line" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Craft the Perfect Prompts</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Take control of your interactions with granular message editing. Refine prompts, adjust parameters, and guide your LLMs towards desired outputs with surgical precision.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="flex-1 flex flex-col gap-12">
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="bar-chart-big" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Benchmark with Confidence</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Gain objective insights into model performance. Define custom metrics, run comprehensive benchmarks, and compare LLMs head-to-head to identify the optimal solution for your needs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="backpack" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Seamlessly Export Your Data</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Preserve and share your valuable insights. Export your conversation histories, benchmark results, and other crucial data in various formats for seamless integration with your existing workflows. (Coming Soon)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- mobile version of features: -->
+    <section id="features" class="py-24 md:hidden">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Revolutionize Your LLM Development</h2>
+            <div class="flex flex-wrap justify-center gap-8 p-8">
+                
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="cpu" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Unleash Your Favorite LLM</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Seamlessly integrate with leading models and providers like OpenAI, Anthropic, Cohere, and more. Bring your own API keys and unlock unparalleled flexibility in model selection.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="git-branch-plus" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Explore Limitless Possibilities with Branching</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Go beyond linear conversations. Create dynamic, branching threads to explore diverse conversational pathways, experiment with different scenarios, and uncover hidden insights.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="file-pen-line" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Craft the Perfect Prompts</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Take control of your interactions with granular message editing. Refine prompts, adjust parameters, and guide your LLMs towards desired outputs with surgical precision.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="bar-chart-big" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Benchmark with Confidence</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Gain objective insights into model performance. Define custom metrics, run comprehensive benchmarks, and compare LLMs head-to-head to identify the optimal solution for your needs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow transition-shadow hover:shadow-lg rounded-lg p-6">
+                        <div class="flex items-start mb-4">
+                            <i data-lucide="backpack" class="w-12 h-12 text-primary mr-4"></i>
+                            <div>
+                                <h3 class="text-2xl font-semibold">Seamlessly Export Your Data</h3>
+                                <p class="text-gray-700 mt-2">
+                                    Preserve and share your valuable insights. Export your conversation histories, benchmark results, and other crucial data in various formats for seamless integration with your existing workflows. (Coming Soon)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="bg-blue-400/20 py-24">
+        <div class="container mx-auto p-8">
+            <h2 class="text-4xl font-bold text-center mb-12">What Our (fake) Users Are Saying</h2>
+            <div class="flex flex-wrap justify-center gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md w-full md:w-1/3">
+                    <p class="text-gray-700 italic mb-4">"Mammal has completely transformed how I build and test LLM applications. The branching feature is an absolute game-changer, and the ability to edit messages with such precision is invaluable."</p>
+                    <div class="flex items-center">
+                        <img src="https://i.pravatar.cc/48?img=20" alt="User Avatar" class="rounded-full w-12 h-12 mr-4">
+                        <div>
+                            <h4 class="font-semibold text-orange-600">Sarah L.</h4>
+                            <p class="text-gray-900">AI Research Scientist</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md w-full md:w-1/3">
+                    <p class="text-gray-700 italic mb-4">"As a machine learning engineer, I'm constantly evaluating different LLMs. Mammal's benchmarking tools have made this process incredibly efficient and insightful. I can't imagine going back to my old workflow."</p>
+                    <div class="flex items-center">
+                        <img src="https://i.pravatar.cc/48?img=2" alt="User Avatar" class="rounded-full w-12 h-12 mr-4">
+                        <div>
+                            <h4 class="font-semibold text-orange-600">John D.</h4>
+                            <p class="text-gray-900">Machine Learning Engineer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-24 pricing-hover">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-8">Pricing</h2>
+            <p class="text-lg mb-12">Mammal is currently in <span class="font-semibold text-primary">free beta</span>.<br />Enjoy all features at no cost!</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 blur">
+                <!-- Tier 1 -->
+                <div class="bg-gray-200 p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-semibold mb-2">Basic</h3>
+                    <p class="text-4xl font-bold mb-4">$0 <span class="text-lg font-normal">/ month</span></p>
+                    <ul class="text-left mb-6">
+                        <li>Limited API calls</li>
+                        <li>Single user</li>
+                    </ul>
+                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-2 px-6 rounded-lg">Get Started</button>
+                </div>
+                <!-- Tier 2 -->
+                <div class="bg-gray-200 p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-semibold mb-2">Pro</h3>
+                    <p class="text-4xl font-bold mb-4">$29 <span class="text-lg font-normal">/ month</span></p>
+                    <ul class="text-left mb-6">
+                        <li>Unlimited API calls</li>
+                        <li>Up to 5 users</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="bg-primary hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg">Get Started</button>
+                </div>
+                <!-- Tier 3 -->
+                <div class="bg-gray-200 p-6 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-semibold mb-2">Enterprise</h3>
+                    <p class="text-4xl font-bold mb-4">Contact Us</p>
+                    <ul class="text-left mb-6">
+                        <li>Custom solutions</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-2 px-6 rounded-lg">Contact Us</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-blue-400/20 py-24">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to revolutionize your LLM workflow?</h2>
+            <button class="bg-primary hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg" onclick="showModal()">
+                Try Mammal Now (Free Beta)
+            </button>
+        </div>
+    </section>
+
+    <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black z-50 bg-opacity-50 hidden">
+        <!-- get an email address and redirect to a download link -->
+           <div class="bg-white p-16 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4">Try Mammal</h2>
+            <form method="post" target="my-response-iframe" action="https://docs.google.com/forms/d/e/1FAIpQLSe2cewozd8edQtfF1VHLW2j45_nzG-ovM_BLpbCNiTt0QFYYw/formResponse">
+                <div class="mb-4">
+                    <label for="email" class="block w-96 text-gray-700">Email</label>
+                    <input type="email" id="email" name="emailAddress" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="flex flex-row items-center justify-end space-x-2">
+                    <a class="font-bold cursor-pointer py-2 px-4 rounded-lg text-gray-500 hover:bg-gray-100 active:bg-gray-200 hover:text-gray-700" onclick="hideModal()">Close</a>
+                    <button type="submit" class="bg-primary hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg">Submit</button>
+                </div>
+            </form>
+           </div>
+    </div>
+
+    <div id="download-modal" class="fixed inset-0 flex items-center justify-center bg-black z-50 bg-opacity-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-bold mb-4">Download Mammal</h2>
+            <p class="mb-4">Download Mammal for your platform.</p>
+            <div class="flex flex-row items-center justify-end space-x-2">
+                <button class="font-bold py-2 px-4 rounded-lg text-gray-500 hover:bg-gray-100 active:bg-gray-200 hover:text-gray-700" onclick="hideDownloadModal()">Close</button>
+                <a href="https://github.com/mammal-ai/mammal/releases" class="bg-primary hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg" onclick="downloadDone()">Download</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (Optional) -->
+    <footer class="bg-gray-100 py-8">
+        <div class="container mx-auto text-center text-gray-600">
+            © Mammal &bull; All rights reserved
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#nav a.section-link');
+            const nav = document.getElementById('nav');
+
+            const applyClass = (el, className, condition) => {
+                if (condition) {
+                    el.classList.add(className);
+                } else {
+                    el.classList.remove(className);
+                }
+            };
+
+            window.addEventListener('scroll', function() {
+                const fromTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                const activeSection = Array.from(sections).find(section => {
+                    const sectionTop = section.offsetTop - 60;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    return fromTop >= sectionTop && fromTop <= sectionBottom;
+                });
+                navLinks.forEach(link => {
+                    applyClass(link, 'text-primary', link.getAttribute('href') === `#${activeSection?.id}`);
+                });
+            });
+        });
+
+        const showModal = () => {
+            document.getElementById('modal').classList.remove('hidden');
+        };
+
+        const hideModal = () => {
+            document.getElementById('modal').classList.add('hidden');
+        };
+
+        const hideDownloadModal = () => {
+            document.getElementById('download-modal').classList.add('hidden');
+        };
+
+        const downloadDone = () => {
+            hideModal();
+            hideDownloadModal();
+            // disable forms
+            document.querySelectorAll('form input, form button').forEach($el => {
+                $el.disabled = true;
+            });
+        };
+
+        document.addEventListener('submit', (e) => {
+            setTimeout(() => {
+                document.getElementById('download-modal').classList.remove('hidden');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
